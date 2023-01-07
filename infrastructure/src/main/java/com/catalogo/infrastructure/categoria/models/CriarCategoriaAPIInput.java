@@ -1,0 +1,35 @@
+package com.catalogo.infrastructure.categoria.models;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class CriarCategoriaAPIInput {
+
+    @JsonProperty("nome")
+    private String nome;
+    @JsonProperty("descricao")
+    private String descricao;
+    @JsonProperty("is_ativo")
+    private Boolean ativo;
+
+
+    public CriarCategoriaAPIInput() {
+    }
+
+    public CriarCategoriaAPIInput(String nome, String descricao, Boolean ativo) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.ativo = ativo;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public Boolean isAtivo() {
+        return ativo;
+    }
+}
