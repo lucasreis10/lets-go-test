@@ -2,7 +2,7 @@ package com.catalogo.infrastructure.categoria.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CriarCategoriaAPIInput {
+public class AtualizarCategoriaResquest {
 
     @JsonProperty("nome")
     private String nome;
@@ -12,10 +12,10 @@ public class CriarCategoriaAPIInput {
     private Boolean ativo;
 
 
-    public CriarCategoriaAPIInput() {
+    public AtualizarCategoriaResquest() {
     }
 
-    public CriarCategoriaAPIInput(String nome, String descricao, Boolean ativo) {
+    public AtualizarCategoriaResquest(String nome, String descricao, Boolean ativo) {
         this.nome = nome;
         this.descricao = descricao;
         this.ativo = ativo;

@@ -6,16 +6,19 @@ import com.catalogo.application.categoria.atualizar.AtualizarCategoriaUseCase;
 import com.catalogo.application.categoria.criar.CriarCategoriaOutput;
 import com.catalogo.application.categoria.criar.CriarCategoriaUseCase;
 import com.catalogo.application.categoria.deletar.DeletarCategoriaUseCase;
+import com.catalogo.application.categoria.recuperar.listar.CategoriaListaOutput;
+import com.catalogo.application.categoria.recuperar.listar.ListarCategoriaUseCase;
 import com.catalogo.application.categoria.recuperar.obter.CategoriaOutput;
 import com.catalogo.application.categoria.recuperar.obter.ObterCategoriaPorIdUseCase;
 import com.catalogo.domain.categoria.Categoria;
 import com.catalogo.domain.categoria.CategoriaID;
 import com.catalogo.domain.exceptions.DomainException;
 import com.catalogo.domain.exceptions.NotFoundException;
+import com.catalogo.domain.pagination.Pagination;
 import com.catalogo.domain.validation.Error;
 import com.catalogo.domain.validation.handler.Notification;
-import com.catalogo.infrastructure.categoria.models.AtualizarCategoriaAPIInput;
-import com.catalogo.infrastructure.categoria.models.CriarCategoriaAPIInput;
+import com.catalogo.infrastructure.categoria.models.AtualizarCategoriaResquest;
+import com.catalogo.infrastructure.categoria.models.CriarCategoriaRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.API;
 import org.hamcrest.Matchers;
@@ -26,8 +29,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Objects;
 
+import static com.catalogo.domain.categoria.Categoria.newCategoria;
 import static io.vavr.API.Left;
 import static io.vavr.API.Right;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,6 +55,8 @@ public class CategoriaAPITest {
     private AtualizarCategoriaUseCase atualizarCategoriaUseCase;
     @MockBean
     private DeletarCategoriaUseCase deletarCategoriaUseCase;
+    @MockBean
+    private ListarCategoriaUseCase listarCategoriaUseCase;
     @Autowired
     private ObjectMapper mapper;
 
@@ -61,7 +68,7 @@ public class CategoriaAPITest {
         final var isAtivoEsperado = true;
 
         final var input =
-                new CriarCategoriaAPIInput(nomeEsperado, descricaoEsperada, isAtivoEsperado);
+                new CriarCategoriaRequest(nomeEsperado, descricaoEsperada, isAtivoEsperado);
 
         when(criarCategoriaUseCase.execute(any()))
                 .thenReturn(Right(CriarCategoriaOutput.from("123")));
@@ -100,7 +107,7 @@ public class CategoriaAPITest {
         final var mensagemErroEsperada = "'nome' não pode ser null";
 
         final var input =
-                new CriarCategoriaAPIInput(nomeEsperado, descricaoEsperada, isAtivoEsperado);
+                new CriarCategoriaRequest(nomeEsperado, descricaoEsperada, isAtivoEsperado);
 
         when(criarCategoriaUseCase.execute(any()))
                 .thenReturn(Left(Notification.create(new Error(mensagemErroEsperada))));
@@ -140,7 +147,7 @@ public class CategoriaAPITest {
         final var mensagemErroEsperada = "'nome' não pode ser null";
 
         final var input =
-                new CriarCategoriaAPIInput(nomeEsperado, descricaoEsperada, isAtivoEsperado);
+                new CriarCategoriaRequest(nomeEsperado, descricaoEsperada, isAtivoEsperado);
 
         when(criarCategoriaUseCase.execute(any()))
                 .thenThrow(DomainException.with(new Error(mensagemErroEsperada)));
@@ -176,7 +183,7 @@ public class CategoriaAPITest {
         final var descricaoEsperada = "Filmes originais";
         final var isAtivoEsperado = true;
         final var categoria =
-                Categoria.newCategoria(nomeEsperado, descricaoEsperada, isAtivoEsperado);
+                newCategoria(nomeEsperado, descricaoEsperada, isAtivoEsperado);
 
         final var idEsperado = categoria.getId().getValue();
 
@@ -237,12 +244,12 @@ public class CategoriaAPITest {
         final var descricaoEsperada = "Filmes originais";
         final var isAtivoEsperado = true;
         final var categoria =
-                Categoria.newCategoria(nomeEsperado, descricaoEsperada, isAtivoEsperado);
+                newCategoria(nomeEsperado, descricaoEsperada, isAtivoEsperado);
 
         when(atualizarCategoriaUseCase.execute(any()))
                 .thenReturn(API.Right(AtualizarCategoriaOutput.from(idEsperado)));
 
-        final var output = new AtualizarCategoriaAPIInput(nomeEsperado, descricaoEsperada, isAtivoEsperado);
+        final var output = new AtualizarCategoriaResquest(nomeEsperado, descricaoEsperada, isAtivoEsperado);
 
         // when
         final var request = put("/categorias/" + idEsperado)
@@ -280,7 +287,7 @@ public class CategoriaAPITest {
         when(atualizarCategoriaUseCase.execute(any()))
                 .thenThrow(NotFoundException.with(Categoria.class, CategoriaID.from(idEsperado)));
 
-        final var output = new AtualizarCategoriaAPIInput(nomeEsperado, descricaoEsperada, isAtivoEsperado);
+        final var output = new AtualizarCategoriaResquest(nomeEsperado, descricaoEsperada, isAtivoEsperado);
 
         // when
         final var request = put("/categorias/" + idEsperado)
@@ -322,7 +329,7 @@ public class CategoriaAPITest {
                         ))
                 );
 
-        final var output = new AtualizarCategoriaAPIInput(nomeEsperado, descricaoEsperada, isAtivoEsperado);
+        final var output = new AtualizarCategoriaResquest(nomeEsperado, descricaoEsperada, isAtivoEsperado);
 
         // when
         final var request = put("/categorias/" + idEsperado)
@@ -367,6 +374,50 @@ public class CategoriaAPITest {
         response.andExpect(status().isNoContent());
 
         verify(deletarCategoriaUseCase, times(1)).execute(Mockito.eq(idEsperado));
+    }
+
+    @Test
+    public void dadoParametrosValidos_quandoExecutarListarCategoria_entaoUmaListaDeCategoriasEhRetornada() throws Exception {
+        // given
+        final var categoria = newCategoria("filmes", null, true);
+        final var page = 0;
+        final var perPage = 10;
+        final var terms = "filmes";
+        final var sort = "descricao";
+        final var direction = "desc";
+        final var total = 1;
+        final var qtdItens = 1;
+        final var itensEpserados = List.of(CategoriaListaOutput.from(categoria));
+
+        when(listarCategoriaUseCase.execute(any()))
+                .thenReturn(new Pagination<>(page, perPage, total, itensEpserados));
+
+        // when
+        final var request = get("/categorias")
+                .queryParam("page", String.valueOf(page))
+                .queryParam("perPage", String.valueOf(perPage))
+                .queryParam("sort", sort)
+                .queryParam("dir", direction)
+                .queryParam("search", terms)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        final var response = mvc.perform(request)
+                .andDo(print());
+
+        //then
+         response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentPage", Matchers.equalTo(page)))
+                .andExpect(jsonPath("$.perPage", Matchers.equalTo(perPage)))
+                .andExpect(jsonPath("$.total", Matchers.equalTo(total)))
+                .andExpect(jsonPath("$.items", Matchers.hasSize(qtdItens)))
+                .andExpect(jsonPath("$.items[0].id", Matchers.equalTo(categoria.getId().getValue())))
+                .andExpect(jsonPath("$.items[0].nome", Matchers.equalTo(categoria.getNome())))
+                .andExpect(jsonPath("$.items[0].descricao", Matchers.equalTo(categoria.getDescricao())))
+                .andExpect(jsonPath("$.items[0].is_ativo", Matchers.equalTo(categoria.isAtivo())))
+                .andExpect(jsonPath("$.items[0].data_criacao", Matchers.equalTo(categoria.getDataCriacao().toString())))
+                .andExpect(jsonPath("$.items[0].data_delecao", Matchers.equalTo(categoria.getDataDelecao())));
+
+        verify(listarCategoriaUseCase, times(1)).execute(any());
     }
 
 }

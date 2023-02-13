@@ -2,8 +2,6 @@ package com.catalogo.application.categoria.recuperar.listar;
 
 import com.catalogo.IntegrationTest;
 import com.catalogo.domain.categoria.Categoria;
-import com.catalogo.domain.categoria.CategoriaGateway;
-import com.catalogo.domain.pagination.Pagination;
 import com.catalogo.domain.pagination.SearchQuery;
 import com.catalogo.infrastructure.categoria.persistence.CategoriaJpaEntity;
 import com.catalogo.infrastructure.categoria.persistence.CategoriaRepository;
@@ -13,15 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
 
 @IntegrationTest
 public class ListarCategoriaUseCaseITTest {

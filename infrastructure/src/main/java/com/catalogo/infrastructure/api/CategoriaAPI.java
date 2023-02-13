@@ -1,9 +1,10 @@
 package com.catalogo.infrastructure.api;
 
 import com.catalogo.domain.pagination.Pagination;
-import com.catalogo.infrastructure.categoria.models.AtualizarCategoriaAPIInput;
-import com.catalogo.infrastructure.categoria.models.CategoriaAPIOutput;
-import com.catalogo.infrastructure.categoria.models.CriarCategoriaAPIInput;
+import com.catalogo.infrastructure.categoria.models.AtualizarCategoriaResquest;
+import com.catalogo.infrastructure.categoria.models.CategoriaResponse;
+import com.catalogo.infrastructure.categoria.models.CriarCategoriaRequest;
+import com.catalogo.infrastructure.categoria.models.ListarCategoriaResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -27,7 +28,7 @@ public interface CategoriaAPI {
             @ApiResponse(responseCode =  "422", description = "Um erro de validação foi lançado."),
             @ApiResponse(responseCode =  "500", description = "Um erro interno foi lançado.")
     })
-    ResponseEntity<?> criarCategoria(@RequestBody CriarCategoriaAPIInput input);
+    ResponseEntity<?> criarCategoria(@RequestBody CriarCategoriaRequest input);
 
     @GetMapping
     @Operation(summary = "Listar todas as categorias paginadas.")
@@ -36,7 +37,7 @@ public interface CategoriaAPI {
             @ApiResponse(responseCode =  "422", description = "Um parametro inválido foi recebido."),
             @ApiResponse(responseCode =  "500", description = "Um erro interno foi lançado.")
     })
-    Pagination<?> listarCategorias(
+    Pagination<ListarCategoriaResponse> listarCategorias(
             @RequestParam(name = "search", required = false, defaultValue = "") final String search,
             @RequestParam(name = "page", required = false, defaultValue = "0") final int page,
             @RequestParam(name = "perPage", required = false, defaultValue = "10") final int perPage,
@@ -55,7 +56,7 @@ public interface CategoriaAPI {
             @ApiResponse(responseCode =  "404", description = "Categoria não encontrada."),
             @ApiResponse(responseCode =  "500", description = "Um erro interno foi lançado.")
     })
-    CategoriaAPIOutput obterPorId(@PathVariable("id") String id);
+    CategoriaResponse obterPorId(@PathVariable("id") String id);
 
     @PutMapping(
             value = "{id}",
@@ -68,7 +69,7 @@ public interface CategoriaAPI {
             @ApiResponse(responseCode =  "404", description = "Categoria não encontrada."),
             @ApiResponse(responseCode =  "500", description = "Um erro interno foi lançado.")
     })
-    ResponseEntity<?> atualizarPorId(@PathVariable("id") String id, @RequestBody AtualizarCategoriaAPIInput input);
+    ResponseEntity<?> atualizarPorId(@PathVariable("id") String id, @RequestBody AtualizarCategoriaResquest input);
 
     @DeleteMapping(
             value = "{id}",

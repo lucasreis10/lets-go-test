@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.Instant;
 
-public class CategoriaAPIOutput {
+public class CategoriaResponse {
 
     @JsonProperty("id")
     private String id;
@@ -22,7 +22,7 @@ public class CategoriaAPIOutput {
     @JsonProperty("data_delecao")
     private Instant dataDelecao;
 
-    public CategoriaAPIOutput(
+    public CategoriaResponse(
             String id,
             String nome,
             String descricao,
@@ -40,11 +40,11 @@ public class CategoriaAPIOutput {
         this.dataDelecao = dataDelecao;
     }
 
-    public CategoriaAPIOutput() {
+    public CategoriaResponse() {
     }
 
-    public static CategoriaAPIOutput from(CategoriaOutput categoriaOutput) {
-        return new CategoriaAPIOutput(
+    public static CategoriaResponse from(CategoriaOutput categoriaOutput) {
+        return new CategoriaResponse(
                 categoriaOutput.getId().getValue(),
                 categoriaOutput.getNome(),
                 categoriaOutput.getDescricao(),
