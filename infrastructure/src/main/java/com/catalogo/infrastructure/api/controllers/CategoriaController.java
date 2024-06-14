@@ -22,8 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.Objects;
 import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 @RestController
 public class CategoriaController implements CategoriaAPI {
@@ -40,11 +41,11 @@ public class CategoriaController implements CategoriaAPI {
             final AtualizarCategoriaUseCase atualizarCategoriaUseCase,
             final DeletarCategoriaUseCase deletarCategoriaUseCase,
             ListarCategoriaUseCase listarCategoriaUseCase) {
-        this.criarCategoriaUseCase = Objects.requireNonNull(criarCategoriaUseCase);
-        this.obterCategoriaPorIdUseCase = obterCategoriaPorIdUseCase;
-        this.atualizarCategoriaUseCase = atualizarCategoriaUseCase;
-        this.deletarCategoriaUseCase = deletarCategoriaUseCase;
-        this.listarCategoriaUseCase = listarCategoriaUseCase;
+        this.criarCategoriaUseCase = requireNonNull(criarCategoriaUseCase);
+        this.obterCategoriaPorIdUseCase = requireNonNull(obterCategoriaPorIdUseCase);
+        this.atualizarCategoriaUseCase = requireNonNull(atualizarCategoriaUseCase);
+        this.deletarCategoriaUseCase = requireNonNull(deletarCategoriaUseCase);
+        this.listarCategoriaUseCase = requireNonNull(listarCategoriaUseCase);
     }
 
     @Override
